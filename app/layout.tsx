@@ -11,15 +11,15 @@ const unbounded = Unbounded({ subsets: ["latin"], variable: "--font-unbounded", 
 
 export const metadata: Metadata = {
   title: {
-    default: "ARIADNE: follow the thread",
+    default: "ARIADNE: how do we find the operator?",
     template: "%s · ARIADNE",
   },
   description:
-    "A patrol drone that spots an incoming drone and, when it is guided by a fiber-optic cable, follows the cable back to where it was launched. Built by Wavsy at the European Defense Tech Hackathon, Prishtina 2026.",
+    "A fiber-optic drone leaves its cable on the ground, and one end of it is where it was launched. ARIADNE is a patrol drone that spots the incoming drone and follows the fresh fiber back to the launch zone. By Wavsy.",
   openGraph: {
-    title: "ARIADNE: follow the thread",
+    title: "ARIADNE: how do we find the operator?",
     description:
-      "A patrol drone that follows a fiber-optic drone's cable back to its launch site. Built at EDTH Prishtina 2026.",
+      "Follow the fiber. A patrol drone that traces a fiber-optic drone's cable back to where it was launched.",
     images: ["/film/poster.jpg"],
     type: "website",
   },

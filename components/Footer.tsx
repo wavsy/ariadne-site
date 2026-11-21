@@ -45,9 +45,6 @@ export function Footer() {
           <a href={LINKS.edth} target="_blank" rel="noopener noreferrer" className={link}>
             European Defense Tech Hub
           </a>
-          <a href={LINKS.repo} target="_blank" rel="noopener noreferrer" className={link}>
-            Source code on GitHub
-          </a>
           <a href={LINKS.wavsy} target="_blank" rel="noopener noreferrer" className={link}>
             wavsy.dev
           </a>

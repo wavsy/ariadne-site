@@ -417,6 +417,139 @@ body {
   animation: scroll-cue 1.8s var(--ease-out) infinite;
 }
 
+/* ── Opening sequence (landing page) ─────────────────────── */
+
+html.intro-lock {
+  overflow: hidden;
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: #020409;
+  cursor: pointer;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.9s ease;
+}
+
+.intro-leaving {
+  transform: translateY(-100%);
+  opacity: 0.6;
+}
+
+.intro-thread {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.intro-thread path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: intro-draw 2.2s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+}
+
+.intro-end {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: intro-pop 0.7s var(--ease-out) 2s forwards;
+}
+
+.intro-copy {
+  position: relative;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.intro-kicker {
+  font-family: var(--font-unbounded), sans-serif;
+  font-size: 0.8125rem;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: rgb(255 255 255 / 0.55);
+  opacity: 0;
+  animation: intro-fade 0.8s ease 0.2s forwards;
+}
+
+.intro-question {
+  margin-top: 1.75rem;
+  font-family: var(--font-unbounded), sans-serif;
+  font-size: clamp(2rem, 7.2vw, 5.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.intro-question span {
+  display: block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  animation: intro-rise 0.9s var(--ease-out) 0.7s forwards;
+}
+
+.intro-question span + span {
+  animation-name: intro-rise, gradient-pan;
+  animation-duration: 0.9s, 9s;
+  animation-timing-function: var(--ease-out), linear;
+  animation-delay: 1s, 0s;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: forwards, none;
+}
+
+.intro-answer {
+  margin-top: 2rem;
+  font-size: 1.0625rem;
+  letter-spacing: 0.02em;
+  color: var(--cyan);
+  opacity: 0;
+  animation: intro-fade 0.8s ease 2.1s forwards;
+}
+
+.intro-skip {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.3);
+}
+
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes intro-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

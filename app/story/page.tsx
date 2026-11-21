@@ -44,7 +44,7 @@ const TIMELINE = [
     n: 4,
     date: "17 November 2026",
     title: "Gas tanker Gas Husky hit at night",
-    body: "The tanker, carrying propane, was reportedly struck by drones about 90 km east of Byala and capsized. All 19 crew were rescued. Three days later the hackathon in Prishtina began.",
+    body: "The tanker, carrying propane, was reportedly struck by drones about 90 km east of Byala and capsized. All 19 crew were rescued.",
     source: "UA.NEWS, citing Maritime.bg",
     href: "https://ua.news/en/world/z-pochatku-zhovtnia-u-viniatkovii-ekonomichnii-zoni-bolgariyi-atakuvali-vzhe-sim-korabliv",
   },
@@ -224,17 +224,18 @@ export default function Story() {
             </p>
             <p className="lede">
               The attacks at sea made one thing plain to us: cheap drones now reach places that felt
-              safe a year ago, and the people facing them have very little warning. So we went to
-              the European Defense Tech Hackathon in Prishtina to work on that, with people who
-              have faced it.
-            </p>
-            <p className="lede">
-              There we chose one concrete, unsolved piece of the drone problem that software can
-              move: fiber-optic drones, which cannot be jammed or heard. That became{" "}
+              safe a year ago, and the people facing them have very little warning. We picked one
+              concrete, unsolved piece of that problem which software can move: fiber-optic drones,
+              which cannot be jammed or heard. That is{" "}
               <Link href="/" className="src">
                 ARIADNE
               </Link>
               .
+            </p>
+            <p className="lede">
+              We developed it extensively during the European Defense Tech Hackathon in Prishtina,
+              where experts with operational experience pulled it apart and told us what a unit
+              would really need. Their feedback is in the system now.
             </p>
             <p className="border-l-2 border-cyan pl-5 font-display text-lg leading-snug tracking-[-0.03em] text-white/90">
               ARIADNE starts on land, against drones that trail a fiber. The sea is where we want

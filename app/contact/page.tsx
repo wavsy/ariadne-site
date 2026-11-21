@@ -54,7 +54,6 @@ export default function Contact() {
           <div className="mt-10">
             <p className="text-[0.75rem] uppercase tracking-[0.14em] text-white/45">Elsewhere</p>
             <p className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-white/70">
-              <a href={LINKS.repo} target="_blank" rel="noopener noreferrer" className="src">GitHub ↗</a>
               <a href={LINKS.wavsy} target="_blank" rel="noopener noreferrer" className="src">wavsy.dev ↗</a>
               <a href={LINKS.hackathon} target="_blank" rel="noopener noreferrer" className="src">EDTH Prishtina ↗</a>
             </p>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Scene } from "@/components/Scene";
 import { Clip } from "@/components/Clip";
 import { Team } from "@/components/Team";
+import { Intro } from "@/components/Intro";
+import { FilmPlayer } from "@/components/FilmPlayer";
 import { FlagBulgaria } from "@/components/Flags";
 import { LINKS } from "@/lib/site";
 
@@ -13,98 +15,99 @@ const STEPS = [
     n: "01",
     clip: "patrol",
     title: "Patrol",
-    body: "The drone flies the perimeter of a protected position on its own. One operator, no flying by hand.",
-    label: "Concept film: the patrol drone lifts off over its crew.",
+    body: "The drone flies the perimeter of a protected position on its own, at 40 metres. One operator, no flying by hand.",
+    label: "Film: the patrol drone circles a protected position.",
   },
   {
     n: "02",
-    clip: "sensor",
-    title: "Spot and report",
-    body: "An incoming drone crosses its camera. The base sees a direction, a rough distance and the type of drone, with a picture. That is the early warning.",
-    label: "Concept film: close-up of the patrol drone's camera.",
+    clip: "sighting",
+    title: "Spot and locate",
+    body: "An incoming drone crosses its camera. Several frames must agree before it reports. The base gets a direction and a rough distance, drawn on the map as a band, not a dot.",
+    label: "Film: the patrol drone's camera frames an incoming drone and sends the base a bearing and a range.",
   },
   {
     n: "03",
-    clip: "trace",
-    title: "Find the fresh cable",
-    body: "It flies to where the drone was seen, works out the one angle from which the cable glints, tips its camera to it and follows the cable, past the older ones.",
-    label: "Concept film: the drone follows a line of fiber across open ground.",
+    clip: "identify",
+    title: "Identify",
+    body: "Is it a drone, and what kind? A detector answers the first question. A classifier that looks for the fiber spool answers the second, and it is the part we are building now.",
+    label: "Film: a confidence bar rises as more frames agree, then the drone type is classified.",
   },
   {
     n: "04",
-    clip: "locate",
-    title: "Suggest a launch zone",
-    body: "Where the cable ends, the base gets a zone with a radius and the evidence behind it.",
-    label: "Concept film: several traced cables converge on one point.",
+    clip: "database",
+    title: "Report",
+    body: "The sighting reaches the base as one small message with a cropped picture, never the full video. Every message is checked against one contract and kept in a journal.",
+    label: "Film: the sighting appears on the base station map and in the list of sightings.",
   },
   {
     n: "05",
-    clip: "map",
-    title: "A person decides",
-    body: "The duty officer confirms or rejects. The system informs and suggests. It takes no action on a zone.",
-    label: "Concept film: traced cables build up on a shared map.",
+    clip: "follow",
+    title: "Follow the fresh fiber",
+    body: "It flies to where the drone was seen, drops to 10 metres, works out the one angle from which the cable glints and tips its camera to it. Then it follows that cable away from the base, past the older ones.",
+    label: "Film: the patrol drone flies low along a glinting line of fiber on the ground.",
+  },
+  {
+    n: "06",
+    clip: "zone",
+    title: "Launch zone",
+    body: "Where the fiber ends, the base gets a point with a radius and the evidence behind it. The operator is usually near it. A person at the base confirms or rejects.",
+    label: "Film: the traced cable ends in a circle on the base map, with confirm and reject buttons.",
   },
 ];
 
+// Simulation results, 20 missions per scenario, from the team's current report.
 const RESULTS = [
-  { scenario: "Good light", zone: "17 of 20", inside: "17", wrong: "0", error: "2.5 m" },
-  { scenario: "Field with seven old cables", zone: "17 of 20", inside: "14", wrong: "3", error: "27.4 m" },
-  { scenario: "60 m of cable in shade", zone: "17 of 20", inside: "17", wrong: "0", error: "2.1 m" },
-  { scenario: "Sun shining along the cable", zone: "17 of 20", inside: "17", wrong: "0", error: "2.1 m" },
+  { scenario: "Good light", zone: "20 of 20", inside: "20", wrong: "0", error: "2.7 m" },
+  { scenario: "Field with seven old cables", zone: "20 of 20", inside: "16", wrong: "4", error: "23.8 m" },
+  { scenario: "60 m of cable in shade", zone: "20 of 20", inside: "20", wrong: "0", error: "2.3 m" },
+  { scenario: "Sun shining along the cable", zone: "20 of 20", inside: "20", wrong: "0", error: "1.5 m" },
   { scenario: "After sunset", zone: "0 of 20", inside: "n/a", wrong: "0", error: "n/a" },
 ];
 
 const STATE = [
   { part: "Sun position, glint angle, camera tilt", state: "Built and tested" },
   { part: "Direction and rough distance to a drone", state: "Built and tested" },
-  { part: "Messages, base station, offline map", state: "Built and tested" },
+  { part: "Messages, base station, offline map, journal", state: "Built and tested" },
   { part: "Cable detection, following and launch zone", state: "Built, tested in simulation" },
+  { part: "Drone detector", state: "Built and connected to the base map" },
   { part: "Full mission in six scenarios", state: "Runs end to end in simulation" },
-  { part: "Drone detector", state: "Model selected, field footage next" },
 ];
 
 const NEXT = [
   { t: "Field test", d: "Real fiber on real ground, filmed from the air in real light." },
+  { t: "Score the detector", d: "Precision, recall and false alarms on air-to-air video, birds included." },
+  { t: "Type classifier", d: "Tell a fiber-optic drone from a radio one by its spool." },
   { t: "Matte fiber and low light", d: "Active near-infrared lighting, so the drone lights the fiber itself." },
-  { t: "Real flight", d: "From the simulator to an aircraft, with a real autopilot." },
-  { t: "Integration", d: "Reports in the formats allied units already use on their maps." },
 ];
 
 export default function Home() {
   return (
     <>
+      <Intro />
+
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate min-h-[100dvh] overflow-hidden bg-bg">
         <div className="aurora pointer-events-none absolute inset-0 -z-10" aria-hidden />
         <div className="dot-grid pointer-events-none absolute inset-0 -z-10" aria-hidden />
-        <div className={`${wrap} grid min-h-[100dvh] content-start gap-8 pb-20 pt-[calc(var(--header-h)+2.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:content-center lg:items-center lg:pt-[var(--header-h)]`}>
+        <div className={`${wrap} grid min-h-[100dvh] content-start gap-8 pb-20 pt-[calc(var(--header-h)+2.5rem)] lg:grid-cols-[1.25fr_0.75fr] lg:content-center lg:items-center lg:pt-[var(--header-h)]`}>
           <div className="hero-copy min-w-0">
-            <a
-              href={LINKS.hackathon}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group mb-7 inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-1.5 pl-1.5 pr-4 text-sm text-white/85 backdrop-blur-md transition-colors hover:border-cyan/60 hover:text-white"
-            >
-              <span className="rounded-full bg-cyan px-2.5 py-0.5 text-xs font-semibold text-deep">EDTH</span>
-              <span className="truncate">Built in Prishtina, 20–22 November 2026</span>
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
-            </a>
-            <h1 className="font-display text-[clamp(2.6rem,8.6vw,6.25rem)] leading-[0.92] tracking-[-0.05em]">
-              <span className="block">Follow</span>
-              <span className="gradient-text block">the thread.</span>
+            <p className="eyebrow mb-7">ARIADNE · by Wavsy</p>
+            <h1 className="font-display text-[clamp(1.95rem,5.1vw,4.4rem)] leading-[0.96] tracking-[-0.05em]">
+              <span className="block whitespace-nowrap">How do we find</span>
+              <span className="gradient-text block whitespace-nowrap">the operator?</span>
             </h1>
-            <p className="mt-8 max-w-[44ch] text-[1.0625rem] leading-7 text-white/75">
-              ARIADNE is a patrol drone that spots an incoming drone, tells the base what it is and
-              where, and, when that drone is guided by a fiber-optic cable, follows the cable back to
-              where it was launched.
+            <p className="mt-8 max-w-[46ch] text-[1.0625rem] leading-7 text-white/75">
+              Follow the fiber. A fiber-optic drone leaves its cable on the ground, and one end of
+              it is where the drone was launched. ARIADNE is a patrol drone that spots the incoming
+              drone and traces the fresh cable back to that point.
             </p>
             <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
               <a href="#film" className="btn btn-primary">
                 <svg viewBox="0 0 12 12" className="h-3 w-3" fill="currentColor" aria-hidden><path d="M2 1v10l9-5z" /></svg>
                 Watch the film
               </a>
-              <Link href="/contact/" className="btn btn-ghost">
-                Talk to the team
+              <Link href="/research/" className="btn btn-ghost">
+                Read the research
               </Link>
             </div>
           </div>
@@ -117,56 +120,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Credentials strip ────────────────────────────── */}
-      <section className="border-y border-white/10 bg-deep/60">
-        <dl className={`${wrap} grid gap-x-8 gap-y-6 py-8 sm:grid-cols-2 lg:grid-cols-4`}>
-          {[
-            ["Event", "European Defense Tech Hackathon"],
-            ["Where", "Prishtina, Kosovo"],
-            ["Team", "Five engineers from Sofia, Bulgaria"],
-            ["Code", "Open source on GitHub"],
-          ].map(([term, value]) => (
-            <div key={term}>
-              <dt className="text-[0.6875rem] uppercase tracking-[0.16em] text-white/45">{term}</dt>
-              <dd className="mt-1.5 text-[0.9375rem] text-white/90">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
       {/* ── Film ─────────────────────────────────────────── */}
-      <section id="film" className={section}>
+      <section id="film" className={`${section} border-t border-white/10`}>
         <div className={wrap}>
-          <div className="reveal max-w-[720px]">
-            <p className="eyebrow">The idea in twenty seconds</p>
-            <h2 className="h2 mt-5">One mission, start to finish.</h2>
+          <div className="reveal grid items-end gap-8 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
+            <div>
+              <p className="eyebrow">The film · two minutes</p>
+              <h2 className="h2 mt-5">One operator. One fiber. One way back.</h2>
+            </div>
+            <p className="lede">
+              An operator launches fiber-optic drones at a base, moves, and launches again. A patrol
+              drone spots one of them, tells the base what it is and where, then follows the fiber
+              on the ground to the place it came from.
+            </p>
           </div>
-          <div className="frame reveal mt-12">
-            <video
-              className="block aspect-video w-full"
-              src="/film/ariadne-film.mp4"
-              poster="/film/poster.jpg"
-              controls
-              playsInline
-              preload="none"
-            />
+          <div className="reveal mt-12">
+            <FilmPlayer />
           </div>
-          <p className="reveal mt-5 text-sm text-white/55">
-            Concept film: one ARIADNE mission, from the first sighting to the launch site.
+          <p className="reveal mt-5 text-sm text-white/50">
+            Concept animation, no sound. The countries are imaginary and every scene is simulated.
           </p>
         </div>
       </section>
 
-      {/* ── Problem ──────────────────────────────────────── */}
-      <section id="idea" className={`${section} border-t border-white/10`}>
-        <div className={wrap}>
+      {/* ── The answer in three moves ────────────────────── */}
+      <section id="idea" className={`${section} overflow-hidden bg-deep`}>
+        <div className="aurora aurora-soft pointer-events-none absolute inset-0" aria-hidden />
+        <div className={`${wrap} relative`}>
           <div className="reveal max-w-[820px]">
             <p className="eyebrow !text-red">The problem</p>
-            <h2 className="h2 mt-5">A drone you cannot jam and cannot hear.</h2>
+            <h2 className="h2 mt-5">He launches, moves, and launches again.</h2>
             <p className="lede mt-7 max-w-[62ch]">
-              Fiber-optic attack drones are steered through a thin glass fiber instead of radio.
-              Jamming does nothing to them. Radio detectors hear nothing. The first warning is often
-              the drone itself.
+              Fiber-optic FPV drones are steered through a thin glass fiber instead of radio.
+              Jamming does nothing to them and radio detectors hear nothing. Air defence can stop
+              the drone. It cannot stop the person who sends the next one.
             </p>
           </div>
           <div className="mt-14 grid gap-4 md:grid-cols-3">
@@ -180,17 +167,17 @@ export default function Home() {
               },
               {
                 big: "Up to 50%",
-                small: "of attack drones in some units",
-                text: "About 15–20% of Russian attack drones in mid-2025, by Ukraine’s Unmanned Systems Forces. Up to half in some units by 2026.",
-                source: "Sources in our project document",
-                href: LINKS.projectDoc,
+                small: "of FPV drones in some units",
+                text: "About 15–20% of Russian FPV drones in mid-2025, by Ukraine’s Unmanned Systems Forces. In some units, up to half by 2026.",
+                source: "RBC-Ukraine and Euromaidan Press",
+                href: "https://euromaidanpress.com/2026/05/28/in-the-age-of-drone-warfare-early-detection-grows-ever-more-urgent-not-just-in-ukraine-but-worldwide/",
               },
               {
                 big: "0.25 mm",
-                small: "of glass, left on the ground",
-                text: "The fiber stays where it fell after the flight. One end of it is the place the drone was launched from.",
-                source: "References",
-                href: LINKS.references,
+                small: "of fiber, left on the ground",
+                text: "The fiber stays where it fell after the flight, often for 4 to 8 kilometres. One end of it is the place the drone was launched from.",
+                source: "Oboronka, 23 Jan 2026",
+                href: "https://oboronka.mezha.ua/en/chomu-ukrajina-dosi-vidstaye-u-dronah-na-optovolokni-307959/",
               },
             ].map((fact, i) => (
               <article key={fact.big} className="card reveal p-7" style={{ transitionDelay: `${i * 80}ms` }}>
@@ -206,14 +193,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── The two fixes ────────────────────────────────── */}
-      <section className={`${section} overflow-hidden bg-deep`}>
-        <div className="aurora aurora-soft pointer-events-none absolute inset-0" aria-hidden />
-        <div className={`${wrap} relative`}>
+      {/* ── The answer ───────────────────────────────────── */}
+      <section className={section}>
+        <div className={wrap}>
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
             <div className="reveal">
-              <p className="eyebrow">The opening</p>
-              <h2 className="h2 mt-5">It worked by hand. Then it stopped.</h2>
+              <p className="eyebrow">The answer</p>
+              <h2 className="h2 mt-5">Follow the fiber to where it starts.</h2>
               <p className="lede mt-7">
                 In February 2025 a Ukrainian brigade saw spent fiber glinting in low sun, flew along
                 it by hand and{" "}
@@ -276,14 +262,14 @@ export default function Home() {
       </section>
 
       {/* ── How it works ─────────────────────────────────── */}
-      <section id="how" className={section}>
+      <section id="how" className={`${section} border-t border-white/10`}>
         <div className={wrap}>
           <div className="reveal max-w-[760px]">
             <p className="eyebrow">How it works</p>
-            <h2 className="h2 mt-5">One attack, five steps.</h2>
+            <h2 className="h2 mt-5">From first sighting to launch zone.</h2>
             <p className="lede mt-7">
-              In our simulation the whole sequence takes about four and a half minutes. The clips are
-              cut from the concept film.
+              In our simulation the whole sequence takes about four and a half minutes. The clips
+              are cut from the film.
             </p>
           </div>
           <ol className="mt-16 space-y-16 md:space-y-28">
@@ -322,12 +308,10 @@ export default function Home() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/img/base-station.jpg" alt="The ARIADNE base station map at the end of a simulated mission: a blue cable track ending in a green launch zone, with grey dashed older cables around it." width={997} height={588} loading="lazy" className="block h-auto w-full" />
             </div>
-            <figcaption className="mt-4 text-sm leading-6 text-white/55">
-              <span className="block max-w-[80ch]">
-                The base station after a simulated mission over a field with old cables. Blue: the
-                cable the drone followed. Grey dashes: seven older cables it ignored. Green: the
-                launch zone it suggested, 1.6 m from the true point.
-              </span>
+            <figcaption className="mt-4 max-w-[80ch] text-sm leading-6 text-white/55">
+              The base station at the end of a simulated mission over a field with old cables. Blue:
+              the cable the drone followed. Grey dashes: the older cables it ignored. Green: the
+              launch zone it suggested.
             </figcaption>
           </figure>
 
@@ -359,12 +343,12 @@ export default function Home() {
                 </table>
               </div>
               <p className="mt-5 max-w-[70ch] text-sm leading-6 text-white/55">
-                The cluttered field is the hardest case and the one that matters most: three times
+                The cluttered field is the hardest case and the one that matters most: four times
                 the true launch point fell outside the zone. After sunset the drone reports the
-attack and correctly declines to trace.{" "}
-                <a href={LINKS.report} target="_blank" rel="noopener noreferrer" className="src">
-                  Full report ↗
-                </a>
+                attack and correctly declines to trace.{" "}
+                <Link href="/research/" className="src">
+                  The hard questions, answered →
+                </Link>
               </p>
             </div>
 
@@ -410,22 +394,22 @@ attack and correctly declines to trace.{" "}
         </div>
       </section>
 
-      {/* ── Hackathon ────────────────────────────────────── */}
+      {/* ── Developed with experts ───────────────────────── */}
       <section className={section}>
         <div className={wrap}>
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
             <div className="reveal">
-              <p className="eyebrow">Where it was built</p>
-              <h2 className="h2 mt-5">Forty-eight hours in Prishtina.</h2>
+              <p className="eyebrow">Developed with experts</p>
+              <h2 className="h2 mt-5">Stress-tested in Prishtina.</h2>
               <p className="lede mt-7">
-                ARIADNE was built at the European Defense Tech Hackathon in Prishtina, Kosovo, on
-                20–22 November 2026: the first defence-focused hackathon of its kind in the country,
-                with more than 200 participants from across Europe and feedback from people with
-                operational experience.
+                We developed ARIADNE extensively during the European Defense Tech Hackathon in
+                Prishtina, Kosovo, on 20–22 November 2026. Three days among more than 200 builders
+                from across Europe, taking feedback from experts with operational experience and
+                working it straight into the system.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <a href={LINKS.hackathon} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                  The Prishtina hackathon ↗
+                  EDTH Prishtina ↗
                 </a>
                 <a href={LINKS.edth} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
                   European Defense Tech Hub ↗
@@ -433,14 +417,21 @@ attack and correctly declines to trace.{" "}
               </div>
             </div>
             <div className="reveal grid gap-4">
-              <a href={LINKS.repo} target="_blank" rel="noopener noreferrer" className="card card-hover block p-7">
-                <p className="eyebrow !text-[0.6875rem]">Open source</p>
-                <p className="mt-4 font-display text-xl tracking-[-0.04em]">github.com/ariadne-edth/ariadne ↗</p>
+              <Link href="/research/" className="card card-hover block p-7">
+                <p className="eyebrow !text-[0.6875rem]">Research</p>
+                <p className="mt-4 font-display text-xl tracking-[-0.04em]">The hard questions, answered →</p>
                 <p className="mt-3 leading-7 text-white/65">
-                  The code, the tests, the simulation report and every source we cite. Clone it and
-                  run the demo on a laptop, offline.
+                  Detection range, birds, matte fiber, cluttered fields, friendly cables. What we
+                  know, what we have measured and what is still open.
                 </p>
-              </a>
+              </Link>
+              <Link href="/name/" className="card card-hover block p-7">
+                <p className="eyebrow !text-[0.6875rem]">The name</p>
+                <p className="mt-4 font-display text-xl tracking-[-0.04em]">Why it is called ARIADNE →</p>
+                <p className="mt-3 leading-7 text-white/65">
+                  A labyrinth, a ball of thread and the oldest way out there is.
+                </p>
+              </Link>
               <Link href="/story/" className="card card-hover flex items-center gap-6 p-7">
                 <FlagBulgaria className="!w-20 shrink-0" />
                 <span>

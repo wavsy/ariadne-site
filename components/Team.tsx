@@ -1,5 +1,20 @@
 import { TEAM } from "@/lib/site";
 
+// Small Bulgarian flag shown on every portrait.
+function FlagBadge() {
+  return (
+    <span
+      className="absolute bottom-0.5 right-0.5 block h-7 w-7 overflow-hidden rounded-full ring-[3px] ring-[#080d18] sm:bottom-1.5 sm:right-1.5 sm:h-8 sm:w-8"
+      role="img"
+      aria-label="Bulgaria"
+    >
+      <span className="block h-1/3 bg-white" />
+      <span className="block h-1/3 bg-[#00966e]" />
+      <span className="block h-1/3 bg-[#d62612]" />
+    </span>
+  );
+}
+
 function LinkedInMark() {
   return (
     <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden>
@@ -33,6 +48,7 @@ export function Team() {
                   </span>
                 )}
               </span>
+              <FlagBadge />
             </span>
             <span className="mt-5 block font-display text-[1.05rem] leading-tight tracking-[-0.03em] transition-colors group-hover:text-cyan">
               {member.name}

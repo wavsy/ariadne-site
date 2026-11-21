@@ -7,18 +7,13 @@ export const WEB3FORMS_KEY = "997fb2b1-99ea-4d1e-879f-afa2c2510369";
 export const LINKS = {
   hackathon: "https://events.eurodefense.tech/prishtina-2026",
   edth: "https://eurodefense.tech/",
-  repo: "https://github.com/ariadne-edth/ariadne",
-  projectDoc: "https://github.com/ariadne-edth/ariadne/blob/main/docs/project.md",
-  references: "https://github.com/ariadne-edth/ariadne/blob/main/docs/references.md",
-  report: "https://github.com/ariadne-edth/ariadne/blob/main/metrics/report.md",
   wavsy: "https://wavsy.dev/",
-  wavsyGithub: "https://github.com/wavsy",
 };
 
 export const NAV = [
-  { href: "/#idea", label: "The idea" },
   { href: "/#how", label: "How it works" },
-  { href: "/#evidence", label: "Evidence" },
+  { href: "/research/", label: "Research" },
+  { href: "/name/", label: "The name" },
   { href: "/story/", label: "Our story" },
   { href: "/#team", label: "Team" },
 ];
