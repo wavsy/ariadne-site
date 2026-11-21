@@ -14,9 +14,10 @@ npm run build    # static site in out/, host it anywhere (Vercel, Netlify, any f
 - Team avatars: `public/team/<name>.jpg`, square. A member without an `avatar` in
   `lib/site.ts` shows initials.
 - Film and clips: `public/film/`, cut from `fiber-hunt-1080p.mp4`.
-- The contact form posts to FormSubmit (formsubmit.co), which forwards the message to
-  wavsy.dev@gmail.com. FormSubmit sends a one-time "Activate Form" email to that inbox
-  the first time a form is submitted from a new site address; click it once per address.
+- The contact form delivers through a form service to wavsy.dev@gmail.com: Web3Forms
+  when `WEB3FORMS_KEY` in `lib/site.ts` is set, FormSubmit (formsubmit.co) otherwise.
+  FormSubmit needs a one-time "Activate Form" click per site address. If the service
+  refuses a message, the visitor's mail app opens with the message already written.
 
 The site follows the repository's rule: state only what is verified, and label
 everything simulated as simulated.

@@ -1,21 +1,70 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { EMAIL } from "@/lib/site";
+import { EMAIL, WEB3FORMS_KEY } from "@/lib/site";
 
 const TOPICS = ["Defence or government", "Mentoring or feedback", "Investment", "Press", "Something else"];
 
-// The site is static, so the message is delivered by FormSubmit, which
-// forwards it to the team's inbox. Replies go to the address the visitor gives.
-const ENDPOINT = `https://formsubmit.co/ajax/${EMAIL}`;
+// The site is static, so a form service forwards the message to the team's
+// inbox: Web3Forms when a key is set, FormSubmit otherwise. If the service
+// refuses or cannot be reached, the visitor's own mail app opens with the
+// message already written, so nothing they typed is lost.
+async function deliver(data: FormData, subject: string): Promise<boolean> {
+  const email = String(data.get("email") ?? "");
+
+  if (WEB3FORMS_KEY) {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject,
+        from_name: "ARIADNE website",
+        name: data.get("name"),
+        email,
+        organisation: data.get("organisation"),
+        topic: data.get("topic"),
+        message: data.get("message"),
+        botcheck: data.get("_honey") ?? "",
+      }),
+    });
+    const result = (await response.json().catch(() => null)) as { success?: boolean } | null;
+    return response.ok && result?.success === true;
+  }
+
+  data.set("_subject", subject);
+  data.set("_replyto", email);
+  data.set("_template", "table");
+  data.set("_captcha", "false");
+  const response = await fetch(`https://formsubmit.co/ajax/${EMAIL}`, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: data,
+  });
+  const result = (await response.json().catch(() => null)) as { success?: boolean | string } | null;
+  return response.ok && result !== null && String(result.success) === "true";
+}
+
+function mailtoLink(data: FormData, subject: string) {
+  const lines = [
+    String(data.get("message") ?? ""),
+    "",
+    "—",
+    String(data.get("name") ?? ""),
+    String(data.get("organisation") ?? ""),
+    String(data.get("email") ?? ""),
+  ].filter((line, i) => i < 3 || line);
+  return `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+}
 
 const field =
   "mt-2 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-colors focus:border-cyan focus:outline-none";
 
-type State = "idle" | "sending" | "sent" | "failed";
+type State = "idle" | "sending" | "sent" | "fallback";
 
 export function ContactForm() {
   const [state, setState] = useState<State>("idle");
+  const [mailto, setMailto] = useState(`mailto:${EMAIL}`);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,25 +73,24 @@ export function ContactForm() {
     const topic = String(data.get("topic") ?? "");
     const organisation = String(data.get("organisation") ?? "").trim();
 
-    data.set("_subject", `ARIADNE: ${topic}${organisation ? ` (${organisation})` : ""}`);
-    data.set("_replyto", String(data.get("email") ?? ""));
-    data.set("_template", "table");
-    data.set("_captcha", "false");
+    const subject = `ARIADNE: ${topic}${organisation ? ` (${organisation})` : ""}`;
+    const fallback = mailtoLink(data, subject);
 
     setState("sending");
+    let ok = false;
     try {
-      const response = await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      const result = (await response.json().catch(() => null)) as { success?: boolean | string } | null;
-      const ok = response.ok && result !== null && String(result.success) === "true";
-      setState(ok ? "sent" : "failed");
-      if (ok) form.reset();
+      ok = await deliver(data, subject);
     } catch {
-      setState("failed");
+      ok = false;
     }
+    if (ok) {
+      form.reset();
+      setState("sent");
+      return;
+    }
+    setMailto(fallback);
+    setState("fallback");
+    window.location.href = fallback;
   }
 
   if (state === "sent") {
@@ -101,13 +149,13 @@ export function ContactForm() {
           {state === "sending" ? "Sending…" : "Send message"} <span aria-hidden>→</span>
         </button>
         <p className="text-sm leading-6 text-white/50" role="status">
-          {state === "failed" ? (
-            <span className="text-[#ff8a91]">
-              The message could not be sent. Please write to us directly at{" "}
-              <a href={`mailto:${EMAIL}`} className="underline underline-offset-4">
-                {EMAIL}
-              </a>
-              .
+          {state === "fallback" ? (
+            <span className="text-white/75">
+              We opened your email app with the message ready to send. If nothing opened,{" "}
+              <a href={mailto} className="text-cyan underline underline-offset-4">
+                open it here
+              </a>{" "}
+              or write to {EMAIL}.
             </span>
           ) : (
             "We reply to the email address you give here."
