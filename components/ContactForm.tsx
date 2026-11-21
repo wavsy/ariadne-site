@@ -13,21 +13,17 @@ async function deliver(data: FormData, subject: string): Promise<boolean> {
   const email = String(data.get("email") ?? "");
 
   if (WEB3FORMS_KEY) {
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject,
-        from_name: "ARIADNE website",
-        name: data.get("name"),
-        email,
-        organisation: data.get("organisation"),
-        topic: data.get("topic"),
-        message: data.get("message"),
-        botcheck: data.get("_honey") ?? "",
-      }),
-    });
+    // Sent as plain form data, the way Web3Forms documents it, so the browser
+    // makes one simple request with no preflight.
+    const body = new FormData();
+    body.set("access_key", WEB3FORMS_KEY);
+    body.set("subject", subject);
+    body.set("from_name", "ARIADNE website");
+    for (const key of ["name", "email", "organisation", "topic", "message"]) {
+      body.set(key, String(data.get(key) ?? ""));
+    }
+    body.set("botcheck", String(data.get("_honey") ?? ""));
+    const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body });
     const result = (await response.json().catch(() => null)) as { success?: boolean } | null;
     return response.ok && result?.success === true;
   }

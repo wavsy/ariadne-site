@@ -2,7 +2,7 @@ export const EMAIL = "wavsy.dev@gmail.com";
 
 // Web3Forms access key for the contact form (https://web3forms.com). It is
 // made to be public. While it is empty the form uses FormSubmit instead.
-export const WEB3FORMS_KEY = "";
+export const WEB3FORMS_KEY = "997fb2b1-99ea-4d1e-879f-afa2c2510369";
 
 export const LINKS = {
   hackathon: "https://events.eurodefense.tech/prishtina-2026",
