@@ -19,7 +19,8 @@ const STATUS: Record<Status, { label: string; cls: string }> = {
 };
 
 type QA = { q: string; a: string; status: Status };
-type Part = { id: string; n: string; title: string; intro: string; figure?: { src: string; alt: string; caption: string }; items: QA[] };
+type Shot = { src: string; alt: string; caption: string; w: number; h: number; wide?: boolean };
+type Part = { id: string; n: string; title: string; intro: string; figure?: { src: string; alt: string; caption: string }; gallery?: { title: string; note: string; shots: Shot[] }; video?: { title: string; note: string; src: string; poster: string; label: string }; items: QA[] };
 
 // Short answers, one or two sentences each, taken from the team's repository as
 // of 21 November 2026. Each one is marked with how far it has been proven.
@@ -94,6 +95,16 @@ const PARTS: Part[] = [
       src: "/img/research/follow.jpg",
       alt: "Film still: the patrol drone flies low over open ground, following a bright line of fiber.",
       caption: "Figure 3. Every glint becomes a point; the points become the track. Concept film.",
+    },
+    gallery: {
+      title: "From the cable model",
+      note: "Images from the model we are training to recognise fiber-optic cables.",
+      shots: [
+        { src: "/img/research/cable-model-field.png", w: 1125, h: 620, alt: "A grass field crossed by many cables, each one traced in a different colour.", caption: "A field full of cables, each traced in its own colour." },
+        { src: "/img/research/cable-model-drones.png", w: 1024, h: 576, alt: "Two drones over open ground, with the cables on the ground below them traced in colour.", caption: "Cables traced on the ground below two drones." },
+        { src: "/img/research/cable-model-spool.png", w: 1280, h: 429, wide: true, alt: "Three panels of a drone carrying a fiber spool: the plain frame, then two versions with the trailing fiber marked in red.", caption: "A drone with its spool: the frame, then the fiber the model marks in red." },
+        { src: "/img/research/cable-model-synthetic.png", w: 1280, h: 426, wide: true, alt: "Three panels: a synthetic frame of cable on grass, the model detection in red, and the ground truth in green.", caption: "Synthetic frame, the model’s detection in red, the ground truth in green." },
+      ],
     },
     items: [
       {
@@ -193,6 +204,13 @@ const PARTS: Part[] = [
       src: "/img/research/database.jpg",
       alt: "Film still: the base station with a map on the left and a list of sightings on the right.",
       caption: "Figure 5. The duty officer’s view. It runs offline on a laptop. Concept film.",
+    },
+    video: {
+      title: "Keeping the link to the drone",
+      note: "Four ways to stay connected to a drone 50 km from base: the mobile network, Starlink on the drone, a ground mesh, or a hybrid. Costs shown are estimates.",
+      src: "/film/drone-comms-options.mp4",
+      poster: "/film/drone-comms-options.jpg",
+      label: "Animation comparing four communication options for a drone flying 50 km from its base, ending in a summary table.",
     },
     items: [
       {
@@ -386,6 +404,34 @@ export default function Research() {
                     </div>
                   ))}
                 </dl>
+
+                {part.gallery && (
+                  <div className="reveal mt-12">
+                    <h3 className="font-display text-[1.05rem] tracking-[-0.03em]">{part.gallery.title}</h3>
+                    <p className="mt-2 max-w-[70ch] text-sm leading-6 text-white/50">{part.gallery.note}</p>
+                    <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                      {part.gallery.shots.map((shot) => (
+                        <figure key={shot.src} className={shot.wide ? "sm:col-span-2" : undefined}>
+                          <a href={shot.src} target="_blank" rel="noopener" className="frame block" aria-label={`Open full size: ${shot.caption}`}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={shot.src} alt={shot.alt} width={shot.w} height={shot.h} loading="lazy" className="block h-auto w-full" />
+                          </a>
+                          <figcaption className="mt-3 text-[0.8125rem] leading-5 text-white/45">{shot.caption}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {part.video && (
+                  <div className="reveal mt-12">
+                    <h3 className="font-display text-[1.05rem] tracking-[-0.03em]">{part.video.title}</h3>
+                    <p className="mt-2 max-w-[70ch] text-sm leading-6 text-white/50">{part.video.note}</p>
+                    <div className="frame mt-6">
+                      <video src={part.video.src} poster={part.video.poster} width={1280} height={720} controls muted playsInline preload="metadata" aria-label={part.video.label} className="block aspect-video h-auto w-full" />
+                    </div>
+                  </div>
+                )}
               </section>
             ))}
 
