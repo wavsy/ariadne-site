@@ -39,6 +39,9 @@ export function Footer() {
         </nav>
         <div className="flex flex-col gap-3">
           <p className={label}>Links</p>
+          <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" className={link}>
+            ARIADNE on LinkedIn
+          </a>
           <a href={LINKS.hackathon} target="_blank" rel="noopener noreferrer" className={link}>
             EDTH Prishtina hackathon
           </a>
@@ -58,6 +61,18 @@ export function Footer() {
             {EMAIL}
           </a>
           <p className="mt-2 text-sm text-white/55">Sofia, Bulgaria</p>
+          <a
+            href={LINKS.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ARIADNE on LinkedIn"
+            className="mt-6 inline-flex h-10 items-center gap-2.5 rounded-full border border-white/15 px-4 text-sm text-white/75 transition-colors duration-150 hover:border-cyan hover:text-cyan"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+              <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4V21H3V9.75Zm6.5 0h3.83v1.54h.05c.53-1 1.84-1.79 3.62-1.79 3.87 0 4.5 2.4 4.5 5.6V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75V21h-4V9.75Z" />
+            </svg>
+            Follow on LinkedIn
+          </a>
         </div>
       </div>
       <div className="relative mx-auto max-w-[1240px] border-t border-white/10 px-5 py-6 text-[0.8125rem] leading-6 text-white/45 sm:px-8">

@@ -8,6 +8,7 @@ export const LINKS = {
   hackathon: "https://events.eurodefense.tech/prishtina-2026",
   edth: "https://eurodefense.tech/",
   wavsy: "https://wavsy.dev/",
+  linkedin: "https://www.linkedin.com/company/ariadne-patrol/",
 };
 
 export const NAV = [

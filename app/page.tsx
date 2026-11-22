@@ -457,6 +457,11 @@ export default function Home() {
           <div className="mt-14">
             <Team />
           </div>
+          <div className="reveal mt-14 flex justify-center">
+            <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+              Follow ARIADNE on LinkedIn ↗
+            </a>
+          </div>
         </div>
       </section>
 
